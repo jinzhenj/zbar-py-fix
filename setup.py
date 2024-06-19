@@ -1,15 +1,15 @@
 try:
     import setuptools
-    from setuptools import setup, Extension
+    from setuptools import Extension, setup
     setuptools_opts = dict(install_requires='numpy')
 except ImportError:
     from distutils.core import setup
     from distutils.extension import Extension
     setuptools_opts = {}
 
-import os
 import ctypes
 import ctypes.util
+import os
 
 SRCS = '''Source/zbar/decoder.c
 Source/zbar/decoder/code128.c
@@ -66,14 +66,14 @@ try:
 except (IOError, ImportError):
     long_description = open('README.md').read()
 
-setup(name='zbar-py',
+setup(name='zbar-py-fix',
       version='1.0.4',
       description='zbar package',
-      url='https://github.com/zplab/zbar-py',
+      url='https://github.com/jinzhenj/zbar-py',
       author='Zachary Pincus',
       author_email='zpincus@gmail.com',
       ext_modules=[zbar],
-      packages=['zbar'],
+      packages=['zbar_fix'],
       license='MIT',
       long_description=long_description,
       **setuptools_opts)
