@@ -61,7 +61,7 @@ zbar = Extension(
         ('NO_STATS', None),
     ],
     libraries=LIBS,
-    extra_compile_args=['-g'],
+    extra_compile_args=['-g', '-O0'],
 )
 
 try:
