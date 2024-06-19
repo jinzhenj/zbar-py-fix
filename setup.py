@@ -73,7 +73,7 @@ setup(name='zbar-py-fix',
       author='Zachary Pincus',
       author_email='zpincus@gmail.com',
       ext_modules=[zbar],
-      packages=['zbar_fix'],
+      packages=['zbar'],
       license='MIT',
       long_description=long_description,
       **setuptools_opts)
