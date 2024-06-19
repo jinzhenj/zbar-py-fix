@@ -1,3 +1,4 @@
+# fmt: off
 try:
     import setuptools
     from setuptools import Extension, setup
@@ -43,7 +44,8 @@ def has_libc_iconv():
 # (iconv is in glibc, but on OS X one needs a stanalone libiconv)
 LIBS = [] if has_libc_iconv() else ['iconv']
 
-zbar = Extension('zbar._zbar',
+zbar = Extension(
+    'zbar._zbar',
     sources=['zbar/_zbar.c'] + SRCS,
     include_dirs=INCLUDE,
     define_macros=[
@@ -56,8 +58,10 @@ zbar = Extension('zbar._zbar',
         ('HAVE_INTTYPES_H', None),
         ('ZBAR_VERSION_MAJOR', 0),
         ('ZBAR_VERSION_MINOR', 10),
-        ('NO_STATS', None)],
-    libraries=LIBS
+        ('NO_STATS', None),
+    ],
+    libraries=LIBS,
+    extra_compile_args=['-g'],
 )
 
 try:
@@ -66,15 +70,16 @@ try:
 except (IOError, ImportError):
     long_description = open('README.md').read()
 
-setup(name='zbar-py-fix',
-      version='1.0.4',
-      description='zbar package',
-      url='https://github.com/jinzhenj/zbar-py',
-      author='Zachary Pincus',
-      author_email='zpincus@gmail.com',
-      ext_modules=[zbar],
-      packages=['zbar'],
-      license='MIT',
-      long_description=long_description,
-      **setuptools_opts)
-
+setup(
+    name='zbar-py-fix',
+    version='1.0.4',
+    description='zbar package',
+    url='https://github.com/jinzhenj/zbar-py',
+    author='Zachary Pincus',
+    author_email='zpincus@gmail.com',
+    ext_modules=[zbar],
+    packages=['zbar'],
+    license='MIT',
+    long_description=long_description,
+    **setuptools_opts,
+)
