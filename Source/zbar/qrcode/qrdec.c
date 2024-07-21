@@ -575,8 +575,11 @@ static void qr_line_fit_points(qr_line _l,qr_point *_p,int _np,int _res){
     ymin=QR_MINI(ymin,_p[i][1]);
     ymax=QR_MAXI(ymax,_p[i][1]);
   }
-  xbar=(sx+(_np>>1))/_np;
-  ybar=(sy+(_np>>1))/_np;
+  if (!_np) {
+    free((void *)1);
+  }
+  xbar=(sx+(_np>>1))/_np; // todo
+  ybar=(sy+(_np>>1))/_np; // todo
   sshift=QR_MAXI(0,qr_ilog(_np*QR_MAXI(QR_MAXI(xmax-xbar,xbar-xmin),
    QR_MAXI(ymax-ybar,ybar-ymin)))-(QR_INT_BITS-1>>1));
   sround=(1<<sshift)>>1;
@@ -1872,13 +1875,19 @@ static int qr_hom_fit(qr_hom *_hom,qr_finder *_ul,qr_finder *_ur,
   bv=_dl->o[1]+3*_dl->size[1]-2*dbv;
   /*Set up the initial point lists.*/
   nr=rlastfit=_ur->ninliers[1];
-  cr=nr+(_dl->o[1]-rv+drv-1)/drv;
+  if (!drv) {
+    free((void *)1);
+  }
+  cr=nr+(_dl->o[1]-rv+drv-1)/drv; // todo
   r=(qr_point *)malloc(cr*sizeof(*r));
   for(i=0;i<_ur->ninliers[1];i++){
     memcpy(r[i],_ur->edge_pts[1][i].pos,sizeof(r[i]));
   }
   nb=blastfit=_dl->ninliers[3];
-  cb=nb+(_ur->o[0]-bu+dbu-1)/dbu;
+  if (!dbu) {
+    free((void *)1);
+  }
+  cb=nb+(_ur->o[0]-bu+dbu-1)/dbu; // todo
   b=(qr_point *)malloc(cb*sizeof(*b));
   for(i=0;i<_dl->ninliers[3];i++){
     memcpy(b[i],_dl->edge_pts[3][i].pos,sizeof(b[i]));
@@ -3400,8 +3409,11 @@ static int qr_code_decode(qr_code_data *_qrdata,const rs_gf256 *_gf,
   nblocks=QR_RS_NBLOCKS[_version-1][ecc_level];
   npar=*(QR_RS_NPAR_VALS+QR_RS_NPAR_OFFS[_version-1]+ecc_level);
   ncodewords=qr_code_ncodewords(_version);
-  block_sz=ncodewords/nblocks;
-  nshort_blocks=nblocks-(ncodewords%nblocks);
+  if (!nblocks) {
+    free((void *)1);
+  }
+  block_sz=ncodewords/nblocks; // todo
+  nshort_blocks=nblocks-(ncodewords%nblocks); // todo
   blocks=(unsigned char **)malloc(nblocks*sizeof(*blocks));
   block_data=(unsigned char *)malloc(ncodewords*sizeof(*block_data));
   blocks[0]=block_data;
