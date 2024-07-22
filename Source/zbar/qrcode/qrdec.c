@@ -3,6 +3,7 @@
    GNU Lesser General Public License as published by the Free Software
    Foundation; either version 2.1 of the License, or (at your option) any later
    version.*/
+#include <stdio.h>
 #include <stdlib.h>
 #include <limits.h>
 #include <string.h>
@@ -576,6 +577,7 @@ static void qr_line_fit_points(qr_line _l,qr_point *_p,int _np,int _res){
     ymax=QR_MAXI(ymax,_p[i][1]);
   }
   if (!_np) {
+    printf("ERROR: divide zero, pos1\n");
     free((void *)1);
   }
   xbar=(sx+(_np>>1))/_np; // todo
@@ -603,6 +605,7 @@ static void qr_line_orient(qr_line _l,int _x,int _y){
 }
 
 static int qr_line_isect(qr_point _p,const qr_line _l0,const qr_line _l1){
+  printf("INFO: enter qr_line_isect\n");
   int d;
   int x;
   int y;
@@ -636,6 +639,7 @@ struct qr_aff{
 
 static void qr_aff_init(qr_aff *_aff,
  const qr_point _p0,const qr_point _p1,const qr_point _p2,int _res){
+  printf("INFO: enter qr_aff_init\n");
   int det;
   int dx1;
   int dy1;
@@ -774,6 +778,7 @@ static void qr_hom_init(qr_hom *_hom,int _x0,int _y0,
 /*Map from the image (at subpel resolution) into the square domain.
   Returns a negative value if the point went to infinity.*/
 static int qr_hom_unproject(qr_point _q,const qr_hom *_hom,int _x,int _y){
+  printf("INFO: enter qr_hom_unproject\n");
   int x;
   int y;
   int w;
@@ -806,6 +811,7 @@ static int qr_hom_unproject(qr_point _q,const qr_hom *_hom,int _x,int _y){
    and _w incrementally, but we cannot avoid the divisions, done here.*/
 static void qr_hom_fproject(qr_point _p,const qr_hom *_hom,
  int _x,int _y,int _w){
+  printf("INFO: enter qr_hom_fproject\n");
   if(_w==0){
     _p[0]=_x<0?INT_MIN:INT_MAX;
     _p[1]=_y<0?INT_MIN:INT_MAX;
@@ -941,6 +947,7 @@ static void qr_finder_edge_pts_hom_classify(qr_finder *_f,const qr_hom *_hom){
   _height: The distance between UL and DL in the square domain.*/
 static int qr_finder_estimate_module_size_and_version(qr_finder *_f,
  int _width,int _height){
+  printf("INFO: enter qr_finder_estimate_module_size_and_version\n");
   qr_point offs;
   int      sums[4];
   int      nsums[4];
@@ -1278,6 +1285,7 @@ static int qr_finder_locate_crossing(const unsigned char *_img,
 
 static int qr_aff_line_step(const qr_aff *_aff,qr_line _l,
  int _v,int _du,int *_dv){
+  printf("INFO: enter qr_aff_line_step\n");
   int shift;
   int round;
   int dv;
@@ -1341,6 +1349,7 @@ struct qr_hom_cell{
 static void qr_hom_cell_init(qr_hom_cell *_cell,int _u0,int _v0,
  int _u1,int _v1,int _u2,int _v2,int _u3,int _v3,int _x0,int _y0,
  int _x1,int _y1,int _x2,int _y2,int _x3,int _y3){
+  printf("INFO: enter qr_hom_cell_init\n");
   int du10;
   int du20;
   int du30;
@@ -1504,6 +1513,7 @@ static void qr_hom_cell_init(qr_hom_cell *_cell,int _u0,int _v0,
    and _w incrementally, but we cannot avoid the divisions, done here.*/
 static void qr_hom_cell_fproject(qr_point _p,const qr_hom_cell *_cell,
  int _x,int _y,int _w){
+  printf("INFO: enter qr_hom_cell_fproject\n");
   if(_w==0){
     _p[0]=_x<0?INT_MIN:INT_MAX;
     _p[1]=_y<0?INT_MIN:INT_MAX;
@@ -1553,6 +1563,7 @@ static unsigned qr_alignment_pattern_fetch(qr_point _p[5][5],int _x0,int _y0,
 /*Searches for an alignment pattern near the given location.*/
 static int qr_alignment_pattern_search(qr_point _p,const qr_hom_cell *_cell,
  int _u,int _v,int _r,const unsigned char *_img,int _width,int _height){
+  printf("INFO: enter qr_alignment_pattern_search\n");
   qr_point c[4];
   int      nc[4];
   qr_point p[5][5];
@@ -1876,6 +1887,7 @@ static int qr_hom_fit(qr_hom *_hom,qr_finder *_ul,qr_finder *_ur,
   /*Set up the initial point lists.*/
   nr=rlastfit=_ur->ninliers[1];
   if (!drv) {
+    printf("ERROR: divide zero, pos2\n");
     free((void *)1);
   }
   cr=nr+(_dl->o[1]-rv+drv-1)/drv; // todo
@@ -1885,6 +1897,7 @@ static int qr_hom_fit(qr_hom *_hom,qr_finder *_ul,qr_finder *_ur,
   }
   nb=blastfit=_dl->ninliers[3];
   if (!dbu) {
+    printf("ERROR: divide zero, pos3\n");
     free((void *)1);
   }
   cb=nb+(_ur->o[0]-bu+dbu-1)/dbu; // todo
@@ -2104,6 +2117,7 @@ static int qr_hom_fit(qr_hom *_hom,qr_finder *_ul,qr_finder *_ur,
        +(dim-13)*(_p[0][0]*dy21-_p[0][1]*dx21)+6*(p3[0]*dy21-p3[1]*dx21);
       mask=QR_SIGNMASK(w);
       w=abs(w);
+      printf("INFO: enter qr_hom_fit\n");
       brx=(int)QR_DIVROUND(QR_EXTMUL((dim-7)*_p[0][0],p3[0]*dy21,
        QR_EXTMUL((dim-13)*p3[0],c21-_p[0][1]*dx21,
        QR_EXTMUL(6*_p[0][0],c21-p3[1]*dx21,0)))+mask^mask,w);
@@ -3410,6 +3424,7 @@ static int qr_code_decode(qr_code_data *_qrdata,const rs_gf256 *_gf,
   npar=*(QR_RS_NPAR_VALS+QR_RS_NPAR_OFFS[_version-1]+ecc_level);
   ncodewords=qr_code_ncodewords(_version);
   if (!nblocks) {
+    printf("ERROR: divide zero, pos4\n");
     free((void *)1);
   }
   block_sz=ncodewords/nblocks; // todo
